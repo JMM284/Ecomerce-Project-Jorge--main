@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from app.db import get_session  # <-- Cambiado: Importamos get_session
+from app.db import get_session 
 from app.models.user import User
 from app.schemas import UserCreate, UserRead, Token
 from app.auth import get_password_hash, verify_password, create_access_token
@@ -35,10 +35,10 @@ def login(user_in: UserCreate, db: Session = Depends(get_session)):
     # Search user
     user = db.exec(select(User).where(User.email == user_in.email)).first()
     
-    # Manual Validation
+    #Verify password
     if not user or not verify_password(user_in.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Email or password incorrect")
     
-    # Create the JWT
+    # Create the JWT token
     token = create_access_token(data={"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}

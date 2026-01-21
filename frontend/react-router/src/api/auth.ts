@@ -1,5 +1,6 @@
 import type { LoginResponse } from "../models/auth";
 
+// Base URL for vercel deployment or local 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const API_URL = `${API_BASE_URL}/auth`;
 
@@ -11,13 +12,14 @@ export const loginUser = async (email: string, password: string): Promise<LoginR
     body: JSON.stringify({ 
       email: email, 
       password: password,
-      username: email // Sending email as username too, just in case
+      username: email // Sending email as username too
     }),
   });
 
+  // Handles response errors
   if (!response.ok) {
     const errorData = await response.json();
-    // Fix for [object Object]: we make sure the error is a string
+
     const detail = errorData.detail;
     const message = typeof detail === 'string' ? detail : JSON.stringify(detail);
     throw new Error(message || "Login failed");
@@ -26,6 +28,7 @@ export const loginUser = async (email: string, password: string): Promise<LoginR
   return response.json();
 };
 
+// Sends a POST request to create a new user account
 export async function registerUser(username: string, email: string, password: string) {
   const response = await fetch(`${API_URL}/register`, {
     method: "POST",

@@ -16,7 +16,7 @@ export default function Home() {
       setIsLoggedIn(true);
     }
 
-    getProducts() // Function that que decide si usar localhost o Render
+    getProducts() // Function that decides if to use localhost or Render
     .then((data) => setProducts(data))
     .catch((error) => console.log("Error:", error));
 }, []);

@@ -5,12 +5,14 @@ from app.db import engine
 
 router = APIRouter(prefix="/order-items", tags=["order-items"])
 
+# Obtain all order items
 @router.get("/")
 def get_order_items():
     with Session(engine) as session:
         items = session.exec(select(OrderItem)).all()
         return items
 
+# Create a new order item
 @router.post("/")
 def create_order_item(item: OrderItem):
     with Session(engine) as session:

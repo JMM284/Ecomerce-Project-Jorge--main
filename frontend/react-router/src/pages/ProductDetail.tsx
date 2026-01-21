@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router";
 import type { Product } from "../models/products"; 
 import "./ProductDetails.css";
 
-// Variable para conectar con local o con Render
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export default function ProductDetail() {
@@ -45,7 +45,7 @@ export default function ProductDetail() {
       // Synchronize the local state with the new stock from the server
       setProduct({ ...product, stock: data.new_stock });
 
-      // Save the item to localStorage to keepin the cart 
+      // Save the item to localStorage to keep in the cart 
       const savedCart = localStorage.getItem("cart");
       const currentCart = savedCart ? JSON.parse(savedCart) : [];
       const newItem = {
@@ -55,6 +55,7 @@ export default function ProductDetail() {
         quantity: quantity
       };
 
+      // Check if the item is already in the cart
       const existingIndex = currentCart.findIndex((item: any) => item.id === product.id);
       if (existingIndex > -1) {
         currentCart[existingIndex].quantity += quantity;

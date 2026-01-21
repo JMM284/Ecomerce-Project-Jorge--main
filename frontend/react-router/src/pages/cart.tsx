@@ -47,7 +47,7 @@ export default function Cart() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // Calculate total price with a loop
+  // Calculate total price 
   let totalPriceCents = 0;
   cartItems.forEach(item => {
     totalPriceCents += item.price_cents * item.quantity;

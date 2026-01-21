@@ -5,9 +5,10 @@ from app.db import engine, create_db_and_tables
 from app.models.product import Product
 from datetime import datetime
 
-# Configuración de rutas
+# configure sys.path to allow imports from parent directory
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+#Create the database tables if they do not exist and check if they already contain data.
 def cargar_datos():
     print("Iniciando creación de base de datos...")
     create_db_and_tables()

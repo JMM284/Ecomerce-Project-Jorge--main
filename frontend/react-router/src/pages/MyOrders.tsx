@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
-// Variable para conectar con local o con Render
+// Variable for connecting to local or vercel
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 interface Order {
@@ -12,6 +12,7 @@ interface Order {
   items?: any[]; 
 }
 
+// Obtain the purchase history for the currently logged-in user
 export async function getMyOrders(token: string) {
   const response = await fetch(`${API_BASE_URL}/orders/my-orders`, {
     headers: {

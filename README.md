@@ -146,6 +146,8 @@ Frontend URL: https://ecomerce-project-jorge-main.vercel.app
 
 Backend URL: https://ecomerce-project-jorge-main.onrender.com
 
+Link of the git hub repository:https://github.com/JMM284/Ecomerce-Project-Jorge--main
+
 ### Backend Deployment
 
 Relational Database: I have used PostgreSQL, which is managed in Render, for data storage. This ensures that user, product, and order information is not lost when the server is restarted.

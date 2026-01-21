@@ -48,10 +48,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_session)):
     #Login route.
     
-    
     user = db.query(User).filter(User.email == form_data.username).first()
     
-    # Validate existence and password
+    # Validate the user credentials 
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
