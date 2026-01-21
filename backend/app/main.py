@@ -12,7 +12,7 @@ async def lifespan(app: FastAPI):
     cargar_datos()
     yield
 
-app = FastAPI(title="Backend E-commerce", lifespan=lifespan)
+app = FastAPI(title="Backend E-commerce", lifespan=lifespan, redirect_slashes=False)
 origins = [
     "http://localhost:5173",          
     "https://ecomerce-project-jorge-main.vercel.app", 
