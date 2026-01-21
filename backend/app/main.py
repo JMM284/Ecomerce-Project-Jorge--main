@@ -6,6 +6,7 @@ from app.routes import user, product, order, order_item, health
 from app.auth import router as auth_router
 from app.seed import cargar_datos
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
@@ -33,6 +34,7 @@ app.include_router(order.router)
 app.include_router(order_item.router)
 app.include_router(health.router)
 app.include_router(auth_router)
+
 
 
 @app.get("/")
