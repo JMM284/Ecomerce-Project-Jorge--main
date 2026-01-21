@@ -13,11 +13,14 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(title="Backend E-commerce", lifespan=lifespan)
-
+origins = [
+    "http://localhost:5173",          
+    "https://ecomerce-project-jorge-main.vercel.app", 
+]
 # Cors Configuration for conections to react frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
