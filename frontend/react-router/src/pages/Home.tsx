@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import type { Product } from "../models/products";
 import "./Home.css";
+import { getProducts } from "../api/products";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,16 +16,11 @@ export default function Home() {
       setIsLoggedIn(true);
     }
 
-    // Get products from backend
-    fetch("http://localhost:8000/products")
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch((error) => {
-        console.log("Error connecting to server:", error);
-      });
-  }, []);
+    getProducts() // Function that que decide si usar localhost o Render
+    .then((data) => setProducts(data))
+    .catch((error) => console.log("Error:", error));
+}, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
