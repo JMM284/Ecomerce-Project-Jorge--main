@@ -1,72 +1,96 @@
-import { useEffect, useState } from "react";
-/**
- * Link: Component for navigation without page reload.
- * - Works like <a> but uses client-side routing
- * - The `to` prop specifies the destination path
- */
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
-import type { Hero } from "../models/hero";
-import { getHeroes } from "../api/heroes";
+import type { Product } from "../models/products";
 import "./Home.css";
 
 export default function Home() {
-  const [heroes, setHeroes] = useState<Hero[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
 
-  /**
-   * useEffect: Hook to perform side effects (API calls, subscriptions, etc.)
-   * 
-   * Syntax: useEffect(effectFunction, dependencyArray)
-   * 
-   * - The effect function runs AFTER the component renders
-   * - The dependency array [] (empty) means: run only ONCE when component mounts
-   * - If we had [someVar], it would re-run whenever someVar changes
-   * 
-   * Common use cases:
-   * - Fetching data from an API
-   * - Setting up subscriptions
-   * - Updating the document title
-   */
   useEffect(() => {
-    async function fetchHeroes() {
-      try {
-        const data = await getHeroes();
-        setHeroes(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
+    // Check if user is logged in
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
     }
 
-    fetchHeroes();
-  }, []); // Empty array = run only on mount (component first appears)
+    // Get products from backend
+    fetch("http://localhost:8000/products")
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data);
+      })
+      .catch((error) => {
+        console.log("Error connecting to server:", error);
+      });
+  }, []);
 
-  if (loading) {
-    return <div className="loading">Loading heroes...</div>;
-  }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    // Redirect to login page
+    window.location.href = "/login";
+  };
 
-  if (error) {
-    return <div className="error">Error: {error}</div>;
-  }
+  // Filter logic
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="home">
-      <h1>Hero database</h1>
+      {/* Top bar for login/logout */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+        {isLoggedIn ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <span style={{ color: '#555' }}>👤 Active Session</span>
+            <Link to="/my-orders" style={{ textDecoration: 'none', color: '#764ba2', fontWeight: 'bold' }}>My Orders</Link>
+            <button 
+              onClick={handleLogout}
+              style={{ padding: '5px 12px', borderRadius: '5px', border: '1px solid #ff4d4d', color: '#ff4d4d', cursor: 'pointer', background: 'none' }}
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <Link to="/login" style={{ textDecoration: 'none', color: '#764ba2', fontWeight: 'bold' }}>Login</Link>
+        )}
+      </div>
+
+      <h1>Product Catalog</h1>
+      
+      {/* Search bar input section */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search for products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+      </div>
+
       <p className="subtitle">
-        Welcome to the Hero database! Click on a hero to see their details.
+        Welcome to our shop. Choose a product to see more details.
       </p>
-      {heroes.length === 0 ? (
-        <p className="no-heroes">No heroes found. Add some heroes to get started!</p>
+      
+      {/* shows a message while loading or if no products match */}      
+      {filteredProducts.length === 0 ? (
+        <p className="no-products">Loading products or no matches found...</p>
       ) : (
-        <div className="heroes-grid">
-          {heroes.map((hero) => (
-            // Link navigates to /heroes/1, /heroes/2, etc. without page reload
-            <Link key={hero.id} to={`/heroes/${hero.id}`} className="hero-card">
-              <h2>{hero.name}</h2>
-              {hero.age && <p className="hero-age">Age: {hero.age}</p>}
-              <span className="view-details">View details →</span>
+        <div className="products-grid">
+          {filteredProducts.map((product) => (
+            <Link key={product.id} to={`/product/${product.id}`} className="product-card">
+              <h2>{product.title}</h2>
+              <p className="product-description">{product.description}</p>
+              
+              <div className="card-footer">
+                <span className="price-tag">
+                  {(product.price_cents / 100).toFixed(2)} €
+                </span>
+                <span className="view-details">See details →</span>
+              </div>
             </Link>
           ))}
         </div>

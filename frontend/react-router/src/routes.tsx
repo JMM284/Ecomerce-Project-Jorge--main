@@ -1,44 +1,59 @@
+import { Navigate, Outlet } from "react-router";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import HeroDetail from "./pages/HeroDetail";
-import CreateHero from "./pages/CreateHero";
-import DeleteHero from "./pages/DeleteHero";
+import Login from "./pages/login"; 
+import Register from "./pages/Register"; 
+import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/cart"; 
+import MyOrders from "./pages/MyOrders"; 
 
-/**
- * Route configuration for React Router.
- * 
- * This array defines all the routes in the application.
- * Each route object can have:
- * - path: The URL path for this route
- * - element: The React component to render
- * - children: Nested routes (rendered inside parent's <Outlet />)
- * - index: If true, this is the default child route (shown at parent's path)
- */
+const ProtectedRoute = () => {
+  const token = localStorage.getItem("token");
+  return token ? <Outlet /> : <Navigate to="/login" replace />;
+};
+
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = localStorage.getItem("token");
+  return token ? <Navigate to="/" replace /> : <>{children}</>;
+};
+
 export const routes = [
   {
-    // Root route - Layout wraps all pages
     path: "/",
     element: <Layout />,
-    // Child routes are rendered inside Layout's <Outlet /> component
     children: [
       {
-        // index: true means this is the default route for "/"
         index: true,
         element: <Home />,
       },
       {
-        // Dynamic route parameter :heroId - accessible via useParams()
-        // Example: /heroes/123 -> heroId = "123"
-        path: "heroes/:heroId",
-        element: <HeroDetail />,
+        path: "login",
+        element: (
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        ),
       },
       {
-        path: "create",
-        element: <CreateHero />,
+        path: "register",
+        element: <Register />,
       },
       {
-        path: "delete",
-        element: <DeleteHero />,
+        path: "product/:productId",
+        element: <ProductDetail />,
+      },
+      {
+        path: "cart",
+        element: <Cart />,
+      },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "my-orders",
+            element: <MyOrders />,
+          },
+        ],
       },
     ],
   },

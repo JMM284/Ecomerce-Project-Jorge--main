@@ -1,28 +1,37 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from .db import create_db_and_tables
-from .routes import health, hero
-
+from contextlib import asynccontextmanager
+from app.db import create_db_and_tables 
+from app.routes import user, product, order, order_item, health
+from app.auth import router as auth_router
+from app.seed import cargar_datos
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
+    cargar_datos()
     yield
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(title="Backend E-commerce", lifespan=lifespan)
 
-# Configure CORS policy.
+# Cors Configuration for conections to react frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Register API routers.
+# Registering routers
+app.include_router(user.router)
+app.include_router(product.router)
+app.include_router(order.router)
+app.include_router(order_item.router)
 app.include_router(health.router)
-app.include_router(hero.router)
+app.include_router(auth_router)
+
+
+@app.get("/")
+def index():
+    return {"status": "ok", "message": "API working properly"}
