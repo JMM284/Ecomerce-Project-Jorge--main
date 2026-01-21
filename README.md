@@ -35,27 +35,28 @@ The application is composed of two parts:
 - TypeScript
 
 ## Project Structure
-
-Ecomerce-Project-Jorge--main/
-│
-├── backend/ # FastAPI backend
-│ ├── models/ # Database models
-│ ├── routers/ # API routes
-│ ├── services/ # Business logic
-│ ├── main.py # The entry point of the application
-│ └── ...
-│
-├── frontend/
-│ └── react-router/ # React + TypeScript frontend
-│ ├── src/
-│ │ ├── pages/ # Application views
-│ │ ├── api/   # Functions to communicate with the backend 
-│ │ ├── models/ # Data models
-│ │ ├── components/# Reusable components
-│ │ ├── services/ # API communication
-│ │ └── ...
-│ └── ...
-
+```text
+    Ecomerce-Project-Jorge--main/
+    │
+    ├── backend/ # FastAPI backend
+    │ ├── models/ # Database models
+    │ ├── routers/ # API routes
+    │ ├── services/ # Business logic
+    │ ├── main.py # The entry point of the application
+    │ └── ...
+    │
+    ├── frontend/
+    │ └── react-router/ # React + TypeScript frontend
+    │ ├── src/
+    │ │ ├── pages/ # Application views
+    │ │ ├── api/   # Functions to communicate with the backend 
+    │ │ ├── models/ # Data models
+    │ │ ├── components/# Reusable components
+    │ │ ├── services/ # API communication
+    │ │ └── ...
+    │ └── ...
+    └── README.md # Project documentation
+```
 ##  Data Models
 
 ### User
