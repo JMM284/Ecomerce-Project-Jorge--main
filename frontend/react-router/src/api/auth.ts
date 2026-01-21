@@ -1,6 +1,7 @@
 import type { LoginResponse } from "../models/auth";
 
-const API_URL = "http://localhost:8000/auth";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = `${API_BASE_URL}/auth`;
 
 export const loginUser = async (email: string, password: string): Promise<LoginResponse> => {
   // We send JSON to match the backend expectation

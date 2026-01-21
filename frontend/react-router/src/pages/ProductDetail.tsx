@@ -3,6 +3,9 @@ import { useParams, Link } from "react-router";
 import type { Product } from "../models/products"; 
 import "./ProductDetails.css";
 
+// Variable para conectar con local o con Render
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 export default function ProductDetail() {
   const { productId } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
@@ -11,7 +14,7 @@ export default function ProductDetail() {
 
   // Fetch product data from the backend
   useEffect(() => {
-    fetch(`http://localhost:8000/products/${productId}`)
+    fetch(`${API_BASE_URL}/products/${productId}`)
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
@@ -27,7 +30,7 @@ export default function ProductDetail() {
     // Call to update the stock in the database
     try {
       const response = await fetch(
-        `http://localhost:8000/products/${product.id}/reduce_stock?quantity=${quantity}`,
+        `${API_BASE_URL}/products/${product.id}/reduce_stock?quantity=${quantity}`,
         { method: "PATCH" }
       );
 

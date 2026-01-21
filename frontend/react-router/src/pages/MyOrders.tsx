@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
+// Variable para conectar con local o con Render
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 interface Order {
   id: number;
   created_at: string;
@@ -9,43 +12,44 @@ interface Order {
   items?: any[]; 
 }
 
+export async function getMyOrders(token: string) {
+  const response = await fetch(`${API_BASE_URL}/orders/my-orders`, {
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Error fetching orders");
+  }
+
+  return response.json();
+}
+
 export default function MyOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const navigate = useNavigate();
 
-useEffect(() => {
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  // If no token, send user to login page
-  if (!token) {
-    navigate("/login");
-    return;
-  }
-  // Get data from the server
-  const fetchOrders = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/orders/my-orders", {
-    headers: {
-    "Authorization": `Bearer ${token}`
-  }
-});
-
-      if (!response.ok) {
-        throw new Error("Error fetching orders");
-      }
-
-      const data = await response.json();
-      setOrders(data); // Save the orders in the state
-    } catch (error) {
-      alert("Error loading your orders.");
+    // If no token, send user to login page
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  };
+    // Get data from the server
+    const fetchOrders = async () => {
+      try {
+        const data = await getMyOrders(token); 
+        setOrders(data); // Save the orders in the state
+      } catch (error) {
+        alert("Error loading your orders.");
+      }
+    };
 
-  fetchOrders();
-}, [navigate]);
-
-
-
+    fetchOrders();
+  }, [navigate]);
 
   return (
     <div className="orders-container" style={{ padding: "2rem", maxWidth: "800px", margin: "0 auto" }}>
@@ -73,7 +77,7 @@ useEffect(() => {
               </div>
 
               {/* List of products inside this order */}
-              <div style={{ borderTop: "1px borderBottom: 1px solid #eee", padding: "10px 0", margin: "10px 0" }}>
+              <div style={{ borderTop: "1px solid #eee", borderBottom: "1px solid #eee", padding: "10px 0", margin: "10px 0" }}>
                 {order.items?.map((item: any, idx: number) => (
                   <p key={idx} style={{ fontSize: "0.9rem", margin: "4px 0" }}>
                     • {item.title} (x{item.quantity})
@@ -104,7 +108,7 @@ useEffect(() => {
             }}
             style={{ marginTop: "20px", background: "none", border: "none", color: "#d9534f", cursor: "pointer", textDecoration: "underline" }}
           >
-
+            Clear Orders
           </button>
         </div>
       )}

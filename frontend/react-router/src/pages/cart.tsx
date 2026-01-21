@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import "./cart.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 export default function Cart() {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const navigate = useNavigate();
@@ -63,7 +65,7 @@ export default function Cart() {
 
     try {
       // Send the order to the backend
-      const response = await fetch("http://localhost:8000/orders/", {
+      const response = await fetch(`${API_BASE_URL}/orders/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
